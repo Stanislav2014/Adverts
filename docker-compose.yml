@@ -1,0 +1,43 @@
+version: '3.3'
+services:
+  advert_local_nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
+    volumes:
+      - ./../app:/app:cached
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./docker/logs/nginx:/var/log/nginx
+    expose:
+      - 80
+    ports:
+      - 80:80
+    env_file:
+      - ./docker/env/dev/VIRTUAL_HOST.env
+      - ./docker/env/dev/APP_ENV.env
+  advert_local_php:
+      build:
+        context: ./
+        dockerfile: ./docker/php/Dockerfile
+      volumes:
+        - ./../app:/app:cached
+        - ./../docker/docker/php/config/php.ini:/usr/local/etc/php/php.ini
+      env_file:
+        - ./docker/env/dev/PHP_IDE_CONFIG.env
+        - ./docker/env/dev/APP_ENV.env
+        - ./docker/env/dev/NODE_PATH.env
+        - ./docker/env/dev/XDEBUG_CONFIG.env
+  advert_local_db:
+    build:
+      context: ./
+      dockerfile: ./docker/mysql/Dockerfile
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - ./../:/app:cached
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
