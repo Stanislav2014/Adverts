@@ -53,10 +53,10 @@ class AdvertController extends BaseController
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:200',
-            'description' => 'required|max:1000',
-            'price' => 'required',
-            'images' => new AdvertRule
+            'name' => ['required', 'max:200'],
+            'description' => ['required', 'max:1000'],
+            'price' => ['required'],
+            'images' => ['required', new AdvertRule]
         ]);
         if ($validator->fails()) {
             return $this->sendError('error', $validator->messages());

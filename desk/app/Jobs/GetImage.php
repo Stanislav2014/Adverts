@@ -38,7 +38,7 @@ class GetImage implements ShouldQueue
     {
         $imageLinks = [];
         foreach ($this->images as $image) {
-            $contents = file_get_contents($image);
+            $contents = @file_get_contents($image);
             $name = basename($image);
             if (Storage::disk('local')->put('public/' . $name, $contents)) {
                 $imageLinks[] = Storage::disk('local')->url('public/' . $name);

@@ -28,19 +28,24 @@ class AdvertRule implements Rule
     //todo валидация и фильтр картинок которые не попадут под regex ли вадиация всех картинок и если одна из
     //todo них не попадает под регулярку то запрос не проходит валидацию.
 
-    public function passes($attribute, $value)
+    public function passes($attribute, $images)
     {
-        if (!is_array($value)) {
+        if (!is_array($images)) {
             return false;
         }
 
-        // Проверяка на индексированный массив
+        // Проверка на индексированный массив
 
-        if (!isset($value[0])) {
+        if (!isset($images[0])) {
             return false;
         }
+        foreach ($images as $image) {
+            if (!@file_get_contents($image, false, null, null, 1)) {
+                return false;
+            }
+        }
 
-        $count = count($value);
+        $count = count($images);
         return $count && $count < 4;
 
     }
